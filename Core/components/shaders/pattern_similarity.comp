@@ -19,7 +19,7 @@ layout(binding = 1) readonly buffer CatalogPatterns {
 // Shape: [query_count, catalog_size]
 layout(binding = 2) writeonly buffer SimilarityScores {
     float scores[];
-} output;
+} outputScores;
 
 // Uniform parameters
 layout(binding = 3) uniform Params {
@@ -69,5 +69,5 @@ void main() {
 
     // Write result to output buffer
     // Output layout: row-major [query_count, catalog_size]
-    output.scores[query_id * params.catalog_size + catalog_id] = similarity;
+    outputScores.scores[query_id * params.catalog_size + catalog_id] = similarity;
 }

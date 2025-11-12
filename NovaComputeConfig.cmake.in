@@ -1,0 +1,20 @@
+@PACKAGE_INIT@
+
+# NovaCompute CMake Configuration File
+# This file is used by find_package(Nova) to locate the Nova Compute Library
+
+include(CMakeFindDependencyMacro)
+
+# Find required dependencies
+find_dependency(Vulkan REQUIRED)
+
+# Include the targets file
+include("${CMAKE_CURRENT_LIST_DIR}/NovaComputeTargets.cmake")
+
+# Provide variables for compatibility
+set(Nova_FOUND TRUE)
+set(Nova_INCLUDE_DIRS "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/nova")
+set(Nova_LIBRARIES Nova::nova_compute)
+set(Nova_VERSION "@PROJECT_VERSION@")
+
+check_required_components(Nova)

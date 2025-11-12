@@ -124,7 +124,7 @@ private:
     // Pattern index (maps pattern_id → buffer offset)
     std::vector<std::string> pattern_ids_;
     std::unordered_map<std::string, uint32_t> pattern_index_;
-    std::mutex catalog_mutex_;
+    mutable std::mutex catalog_mutex_;
 
     // Performance tracking
     mutable PerformanceMetrics metrics_;
