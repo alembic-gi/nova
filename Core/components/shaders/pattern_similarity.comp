@@ -1,0 +1,73 @@
+#version 450
+
+// Work group size optimized for AMD GPUs (256 threads per work group)
+layout(local_size_x = 256) in;
+
+// Input: Query pattern embeddings
+// Shape: [query_count, embedding_dim]
+layout(binding = 0) readonly buffer QueryPatterns {
+    float embeddings[];
+} query;
+
+// Input: Pattern catalog embeddings
+// Shape: [catalog_size, embedding_dim]
+layout(binding = 1) readonly buffer CatalogPatterns {
+    float embeddings[];
+} catalog;
+
+// Output: Similarity scores (cosine similarity)
+// Shape: [query_count, catalog_size]
+layout(binding = 2) writeonly buffer SimilarityScores {
+    float scores[];
+} output;
+
+// Uniform parameters
+layout(binding = 3) uniform Params {
+    uint query_count;       // Number of query patterns
+    uint catalog_size;      // Number of patterns in catalog
+    uint embedding_dim;     // Dimensionality of embeddings (e.g., 512)
+    uint padding;           // Alignment padding
+} params;
+
+void main() {
+    // Global invocation ID: maps to (query_id, catalog_id) pair
+    uint gid = gl_GlobalInvocationID.x;
+
+    // Compute 2D indices from 1D global ID
+    uint query_id = gid / params.catalog_size;
+    uint catalog_id = gid % params.catalog_size;
+
+    // Bounds check: ensure we don't exceed array dimensions
+    if (query_id >= params.query_count || catalog_id >= params.catalog_size) {
+        return;
+    }
+
+    // Compute cosine similarity: dot(a, b) / (||a|| * ||b||)
+    float dot_product = 0.0;
+    float query_norm_sq = 0.0;
+    float catalog_norm_sq = 0.0;
+
+    // Calculate offsets for accessing embeddings
+    uint query_offset = query_id * params.embedding_dim;
+    uint catalog_offset = catalog_id * params.embedding_dim;
+
+    // Compute dot product and norms in single pass (cache-friendly)
+    for (uint i = 0; i < params.embedding_dim; i++) {
+        float q = query.embeddings[query_offset + i];
+        float c = catalog.embeddings[catalog_offset + i];
+
+        dot_product += q * c;
+        query_norm_sq += q * q;
+        catalog_norm_sq += c * c;
+    }
+
+    // Compute cosine similarity
+    // Add epsilon (1e-8) to prevent division by zero
+    float query_norm = sqrt(query_norm_sq);
+    float catalog_norm = sqrt(catalog_norm_sq);
+    float similarity = dot_product / (query_norm * catalog_norm + 1e-8);
+
+    // Write result to output buffer
+    // Output layout: row-major [query_count, catalog_size]
+    output.scores[query_id * params.catalog_size + catalog_id] = similarity;
+}

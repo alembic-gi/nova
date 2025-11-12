@@ -1,0 +1,96 @@
+#version 450
+
+// Work group size: must match shared memory allocation (256)
+layout(local_size_x = 256) in;
+
+// Shared memory for parallel sorting
+// Each work group loads 256 scores into shared memory
+shared float shared_scores[256];
+shared uint shared_indices[256];
+
+// Input: Similarity scores from pattern_similarity.comp
+// Shape: [num_scores]
+layout(binding = 0) readonly buffer Scores {
+    float data[];
+} scores;
+
+// Output: Top-K similarity scores (sorted descending)
+// Shape: [k]
+layout(binding = 1) writeonly buffer TopKScores {
+    float values[];
+} topk_scores;
+
+// Output: Top-K pattern indices (corresponding to scores)
+// Shape: [k]
+layout(binding = 2) writeonly buffer TopKIndices {
+    uint indices[];
+} topk_indices;
+
+// Uniform parameters
+layout(binding = 3) uniform Params {
+    uint num_scores;    // Total number of scores to process
+    uint k;             // Number of top results to return (k <= 256)
+    uint padding1;      // Alignment padding
+    uint padding2;      // Alignment padding
+} params;
+
+void main() {
+    uint gid = gl_GlobalInvocationID.x;
+    uint lid = gl_LocalInvocationID.x;
+
+    // Load scores into shared memory
+    // If gid exceeds num_scores, load sentinel value (very negative)
+    if (gid < params.num_scores) {
+        shared_scores[lid] = scores.data[gid];
+        shared_indices[lid] = gid;
+    } else {
+        shared_scores[lid] = -999999.0;  // Sentinel: sorts to end
+        shared_indices[lid] = 0;
+    }
+
+    // Synchronize: ensure all threads have loaded data
+    barrier();
+
+    // Parallel bitonic sort (descending order)
+    // Bitonic sort works on power-of-2 sizes (256 = 2^8)
+    // Outer loop: doubling merge size (2, 4, 8, ..., 256)
+    for (uint k_size = 2; k_size <= 256; k_size *= 2) {
+        // Inner loop: halving comparison distance
+        for (uint j = k_size / 2; j > 0; j /= 2) {
+            uint ixj = lid ^ j;  // XOR gives comparison partner
+
+            if (ixj > lid) {
+                // Determine sort direction based on bitonic sequence
+                // (lid & k_size) == 0 → ascending bitonic sequence
+                // (lid & k_size) != 0 → descending bitonic sequence
+                bool ascending = ((lid & k_size) == 0);
+
+                // Compare and swap if needed
+                // For descending global order, ascending=false → swap if left < right
+                bool should_swap = (shared_scores[lid] < shared_scores[ixj]) == ascending;
+
+                if (should_swap) {
+                    // Swap scores
+                    float temp_score = shared_scores[lid];
+                    shared_scores[lid] = shared_scores[ixj];
+                    shared_scores[ixj] = temp_score;
+
+                    // Swap indices (to track original positions)
+                    uint temp_index = shared_indices[lid];
+                    shared_indices[lid] = shared_indices[ixj];
+                    shared_indices[ixj] = temp_index;
+                }
+            }
+
+            // Synchronize after each comparison round
+            barrier();
+        }
+    }
+
+    // Write top-K results (first k elements are largest after sort)
+    // Only k threads write (rest do nothing)
+    if (lid < params.k) {
+        topk_scores.values[lid] = shared_scores[lid];
+        topk_indices.indices[lid] = shared_indices[lid];
+    }
+}
