@@ -57,10 +57,25 @@ bool NovaPatternCatalog::initialize() {
     }
 
     // Access Nova internals (via _architect which is NovaCore)
-    // Note: This requires making _architect public or adding accessor methods to Nova
-    // For now, we'll work with what we have
-    device_ = VK_NULL_HANDLE;  // Will be set from Nova internals
-    compute_queue_ = VK_NULL_HANDLE;  // Will be set from Nova internals
+    NovaCore* core = nova_engine_->getCore();
+    if (!core) {
+        std::cerr << "NovaPatternCatalog: Failed to get NovaCore" << std::endl;
+        return false;
+    }
+
+    device_ = core->getDevice();
+    compute_queue_ = core->getComputeQueue();
+
+    // Create command pool for compute operations
+    VkCommandPoolCreateInfo pool_info = {};
+    pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    pool_info.queueFamilyIndex = 0;  // TODO: Get actual compute queue family index
+    pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+    if (vkCreateCommandPool(device_, &pool_info, nullptr, &compute_command_pool_) != VK_SUCCESS) {
+        std::cerr << "NovaPatternCatalog: Failed to create command pool" << std::endl;
+        return false;
+    }
 
     // Create compute resources
     if (!createBuffers()) {
@@ -131,18 +146,42 @@ bool NovaPatternCatalog::addPattern(const std::string& pattern_id, const std::ve
     pattern_ids_.push_back(pattern_id);
     pattern_index_[pattern_id] = pattern_idx;
 
-    // Upload embedding to GPU buffer
-    // Map buffer memory and copy embedding data
-    if (pattern_embeddings_allocation_ != VK_NULL_HANDLE) {
-        void* mapped_data = nullptr;
-        VmaAllocatorInfo allocator_info;
-        // Note: Need VmaAllocator from Nova to map memory
-        // This is a placeholder for the actual VMA mapping
-        // vmaMapMemory(allocator, pattern_embeddings_allocation_, &mapped_data);
-        // memcpy((char*)mapped_data + pattern_idx * config_.embedding_dim * sizeof(float),
-        //        embedding.data(), embedding.size() * sizeof(float));
-        // vmaUnmapMemory(allocator, pattern_embeddings_allocation_);
+    // Upload embedding to GPU buffer via staging buffer
+    // Pattern embeddings buffer is GPU_ONLY, so we need a staging buffer for upload
+    NovaCore* core = nova_engine_->getCore();
+    VmaAllocator allocator = core->getAllocator();
+
+    // Create staging buffer
+    VkDeviceSize buffer_size = embedding.size() * sizeof(float);
+    VkBuffer staging_buffer;
+    VmaAllocation staging_allocation;
+
+    VkBufferCreateInfo staging_info = {};
+    staging_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    staging_info.size = buffer_size;
+    staging_info.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    staging_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    VmaAllocationCreateInfo staging_alloc_info = {};
+    staging_alloc_info.usage = VMA_MEMORY_USAGE_CPU_ONLY;
+    staging_alloc_info.flags = VMA_ALLOCATION_CREATE_MAPPED_BIT;
+
+    VmaAllocationInfo staging_alloc_result;
+    if (vmaCreateBuffer(allocator, &staging_info, &staging_alloc_info,
+                        &staging_buffer, &staging_allocation, &staging_alloc_result) != VK_SUCCESS) {
+        std::cerr << "NovaPatternCatalog: Failed to create staging buffer" << std::endl;
+        return false;
     }
+
+    // Copy embedding data to staging buffer (already mapped)
+    memcpy(staging_alloc_result.pMappedData, embedding.data(), buffer_size);
+
+    // Copy from staging to GPU buffer
+    // TODO: Implement actual buffer copy via command buffer
+    // For now, this is a placeholder - full implementation needs command buffer submission
+
+    // Cleanup staging buffer
+    vmaDestroyBuffer(allocator, staging_buffer, staging_allocation);
 
     return true;
 }
@@ -427,6 +466,9 @@ bool NovaPatternCatalog::createBuffers() {
         return false;
     }
 
+    NovaCore* core = nova_engine_->getCore();
+    VmaAllocator allocator = core->getAllocator();
+
     // Calculate buffer sizes
     VkDeviceSize pattern_embeddings_size = config_.max_patterns * config_.embedding_dim * sizeof(float);
     VkDeviceSize similarity_scores_size = config_.max_patterns * sizeof(float);
@@ -443,22 +485,62 @@ bool NovaPatternCatalog::createBuffers() {
         return false;
     }
 
-    // Note: Full VMA implementation would require access to NovaCore's allocator
-    // For now, we create placeholder buffer handles
-    // In a complete implementation, we would use vmaCreateBuffer like:
-    //
-    // VkBufferCreateInfo buffer_info = {};
-    // buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    // buffer_info.size = pattern_embeddings_size;
-    // buffer_info.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-    // buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    //
-    // VmaAllocationCreateInfo alloc_info = {};
-    // alloc_info.usage = VMA_MEMORY_USAGE_GPU_ONLY;
-    // alloc_info.flags = VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
-    //
-    // vmaCreateBuffer(allocator, &buffer_info, &alloc_info,
-    //                 &pattern_embeddings_buffer_, &pattern_embeddings_allocation_, nullptr);
+    // Create pattern embeddings buffer (GPU storage + CPU upload)
+    VkBufferCreateInfo buffer_info = {};
+    buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    buffer_info.size = pattern_embeddings_size;
+    buffer_info.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+    buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    VmaAllocationCreateInfo alloc_info = {};
+    alloc_info.usage = VMA_MEMORY_USAGE_GPU_ONLY;
+    alloc_info.flags = VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
+
+    if (vmaCreateBuffer(allocator, &buffer_info, &alloc_info,
+                        &pattern_embeddings_buffer_, &pattern_embeddings_allocation_, nullptr) != VK_SUCCESS) {
+        std::cerr << "NovaPatternCatalog: Failed to create pattern embeddings buffer" << std::endl;
+        return false;
+    }
+
+    // Create similarity scores buffer
+    buffer_info.size = similarity_scores_size;
+    buffer_info.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+
+    if (vmaCreateBuffer(allocator, &buffer_info, &alloc_info,
+                        &similarity_scores_buffer_, &similarity_scores_allocation_, nullptr) != VK_SUCCESS) {
+        std::cerr << "NovaPatternCatalog: Failed to create similarity scores buffer" << std::endl;
+        return false;
+    }
+
+    // Create top-K scores buffer
+    buffer_info.size = topk_scores_size;
+    alloc_info.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;  // Need to read back results
+
+    if (vmaCreateBuffer(allocator, &buffer_info, &alloc_info,
+                        &topk_scores_buffer_, &topk_scores_allocation_, nullptr) != VK_SUCCESS) {
+        std::cerr << "NovaPatternCatalog: Failed to create top-K scores buffer" << std::endl;
+        return false;
+    }
+
+    // Create top-K indices buffer
+    buffer_info.size = topk_indices_size;
+
+    if (vmaCreateBuffer(allocator, &buffer_info, &alloc_info,
+                        &topk_indices_buffer_, &topk_indices_allocation_, nullptr) != VK_SUCCESS) {
+        std::cerr << "NovaPatternCatalog: Failed to create top-K indices buffer" << std::endl;
+        return false;
+    }
+
+    // Create params uniform buffer
+    buffer_info.size = params_size;
+    buffer_info.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+    alloc_info.usage = VMA_MEMORY_USAGE_CPU_TO_GPU;
+
+    if (vmaCreateBuffer(allocator, &buffer_info, &alloc_info,
+                        &params_buffer_, &params_buffer_allocation_, nullptr) != VK_SUCCESS) {
+        std::cerr << "NovaPatternCatalog: Failed to create params buffer" << std::endl;
+        return false;
+    }
 
     std::cout << "NovaPatternCatalog: Buffer allocation summary:" << std::endl;
     std::cout << "  - Pattern embeddings: " << (pattern_embeddings_size / 1024.0 / 1024.0) << " MB" << std::endl;
@@ -665,23 +747,41 @@ void NovaPatternCatalog::cleanupResources() {
         descriptor_pool_ = VK_NULL_HANDLE;
     }
 
-    // Free VMA buffers (in full implementation)
-    // vmaDestroyBuffer(allocator, pattern_embeddings_buffer_, pattern_embeddings_allocation_);
-    // vmaDestroyBuffer(allocator, similarity_scores_buffer_, similarity_scores_allocation_);
-    // vmaDestroyBuffer(allocator, topk_scores_buffer_, topk_scores_allocation_);
-    // vmaDestroyBuffer(allocator, topk_indices_buffer_, topk_indices_allocation_);
-    // vmaDestroyBuffer(allocator, params_buffer_, params_buffer_allocation_);
+    // Free VMA buffers
+    if (nova_engine_) {
+        NovaCore* core = nova_engine_->getCore();
+        VmaAllocator allocator = core->getAllocator();
 
-    pattern_embeddings_buffer_ = VK_NULL_HANDLE;
-    pattern_embeddings_allocation_ = VK_NULL_HANDLE;
-    similarity_scores_buffer_ = VK_NULL_HANDLE;
-    similarity_scores_allocation_ = VK_NULL_HANDLE;
-    topk_scores_buffer_ = VK_NULL_HANDLE;
-    topk_scores_allocation_ = VK_NULL_HANDLE;
-    topk_indices_buffer_ = VK_NULL_HANDLE;
-    topk_indices_allocation_ = VK_NULL_HANDLE;
-    params_buffer_ = VK_NULL_HANDLE;
-    params_buffer_allocation_ = VK_NULL_HANDLE;
+        if (pattern_embeddings_buffer_ != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(allocator, pattern_embeddings_buffer_, pattern_embeddings_allocation_);
+            pattern_embeddings_buffer_ = VK_NULL_HANDLE;
+            pattern_embeddings_allocation_ = VK_NULL_HANDLE;
+        }
+
+        if (similarity_scores_buffer_ != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(allocator, similarity_scores_buffer_, similarity_scores_allocation_);
+            similarity_scores_buffer_ = VK_NULL_HANDLE;
+            similarity_scores_allocation_ = VK_NULL_HANDLE;
+        }
+
+        if (topk_scores_buffer_ != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(allocator, topk_scores_buffer_, topk_scores_allocation_);
+            topk_scores_buffer_ = VK_NULL_HANDLE;
+            topk_scores_allocation_ = VK_NULL_HANDLE;
+        }
+
+        if (topk_indices_buffer_ != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(allocator, topk_indices_buffer_, topk_indices_allocation_);
+            topk_indices_buffer_ = VK_NULL_HANDLE;
+            topk_indices_allocation_ = VK_NULL_HANDLE;
+        }
+
+        if (params_buffer_ != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(allocator, params_buffer_, params_buffer_allocation_);
+            params_buffer_ = VK_NULL_HANDLE;
+            params_buffer_allocation_ = VK_NULL_HANDLE;
+        }
+    }
 
     // Destroy command pool
     if (compute_command_pool_ != VK_NULL_HANDLE) {

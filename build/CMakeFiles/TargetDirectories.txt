@@ -1,0 +1,8 @@
+/home/persist/alembic/Nova/build/CMakeFiles/CompileShaders.dir
+/home/persist/alembic/Nova/build/CMakeFiles/nova_compute.dir
+/home/persist/alembic/Nova/build/CMakeFiles/edit_cache.dir
+/home/persist/alembic/Nova/build/CMakeFiles/rebuild_cache.dir
+/home/persist/alembic/Nova/build/CMakeFiles/list_install_components.dir
+/home/persist/alembic/Nova/build/CMakeFiles/install.dir
+/home/persist/alembic/Nova/build/CMakeFiles/install/local.dir
+/home/persist/alembic/Nova/build/CMakeFiles/install/strip.dir

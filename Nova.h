@@ -16,11 +16,15 @@ class Nova {
         Nova(NovaConfig);
         ~Nova();
 
-        // TODO: Determine Default Initializers 
-        
+        // TODO: Determine Default Initializers
+
 
         void illuminate();
         //void illuminate(fnManifest);
+
+        // Accessors for compute integration (NovaPatternCatalog, NovaMLManager)
+        NovaCore* getCore() { return _architect; }
+        const NovaCore* getCore() const { return _architect; }
 
     private:
         NovaConfig _config;

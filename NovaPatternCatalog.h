@@ -90,6 +90,10 @@ public:
     VkBuffer getSimilarityScoresBuffer() const;
     bool synchronizeWithMFN(VkBuffer mfn_buffer);
 
+    // Config access (for C API)
+    uint32_t getEmbeddingDim() const { return config_.embedding_dim; }
+    uint32_t getMaxPatterns() const { return config_.max_patterns; }
+
 private:
     PatternSimilarityConfig config_;
     std::unique_ptr<Nova> nova_engine_;

@@ -47,6 +47,14 @@ class NovaCore {
         MeshBuffer createMeshBuffer(std::span<uint32_t>, std::span<Vertex_T>);
         void drawFrame();
 
+        // Accessors for compute integration (NovaPatternCatalog, NovaMLManager)
+        VkDevice getDevice() { return logical_device; }
+        VkQueue getComputeQueue() { return queues.compute; }
+        VkQueue getGraphicsQueue() { return queues.graphics; }
+        VmaAllocator getAllocator() { return allocator; }
+        VkInstance getInstance() { return instance; }
+        VkPhysicalDevice getPhysicalDevice() { return physical_device; }
+
     private:
         FrameData frames[MAX_FRAMES_IN_FLIGHT];
         VkRenderPass render_pass;

@@ -91,6 +91,7 @@ add_custom_target(CompileShaders ALL DEPENDS ${COMPILED_SHADERS})
 # Source files for libnova_compute.so
 set(NOVA_COMPUTE_SOURCES
     NovaPatternCatalog.cpp
+    NovaPatternCatalog_C_API.cpp
     NovaMLManager.cpp
     Nova.cpp
     Core/core.cpp
@@ -131,11 +132,13 @@ set(NOVA_COMPUTE_HEADERS
 # Build shared library
 add_library(nova_compute SHARED ${NOVA_COMPUTE_SOURCES})
 
-# Set library version
+# Set library version and symbol visibility
 set_target_properties(nova_compute PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1
     PUBLIC_HEADER "${NOVA_COMPUTE_HEADERS}"
+    CXX_VISIBILITY_PRESET hidden
+    VISIBILITY_INLINES_HIDDEN ON
 )
 
 # Include directories

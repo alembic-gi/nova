@@ -1,0 +1,98 @@
+[
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/NovaPatternCatalog.cpp.o -c /home/persist/alembic/Nova/NovaPatternCatalog.cpp",
+  "file": "/home/persist/alembic/Nova/NovaPatternCatalog.cpp",
+  "output": "CMakeFiles/nova_compute.dir/NovaPatternCatalog.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/NovaPatternCatalog_C_API.cpp.o -c /home/persist/alembic/Nova/NovaPatternCatalog_C_API.cpp",
+  "file": "/home/persist/alembic/Nova/NovaPatternCatalog_C_API.cpp",
+  "output": "CMakeFiles/nova_compute.dir/NovaPatternCatalog_C_API.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/NovaMLManager.cpp.o -c /home/persist/alembic/Nova/NovaMLManager.cpp",
+  "file": "/home/persist/alembic/Nova/NovaMLManager.cpp",
+  "output": "CMakeFiles/nova_compute.dir/NovaMLManager.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Nova.cpp.o -c /home/persist/alembic/Nova/Nova.cpp",
+  "file": "/home/persist/alembic/Nova/Nova.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Nova.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/core.cpp.o -c /home/persist/alembic/Nova/Core/core.cpp",
+  "file": "/home/persist/alembic/Nova/Core/core.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/core.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/modules/device.cpp.o -c /home/persist/alembic/Nova/Core/modules/device.cpp",
+  "file": "/home/persist/alembic/Nova/Core/modules/device.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/modules/device.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/modules/render.cpp.o -c /home/persist/alembic/Nova/Core/modules/render.cpp",
+  "file": "/home/persist/alembic/Nova/Core/modules/render.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/modules/render.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/modules/management.cpp.o -c /home/persist/alembic/Nova/Core/modules/management.cpp",
+  "file": "/home/persist/alembic/Nova/Core/modules/management.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/modules/management.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/modules/presentation.cpp.o -c /home/persist/alembic/Nova/Core/modules/presentation.cpp",
+  "file": "/home/persist/alembic/Nova/Core/modules/presentation.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/modules/presentation.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/modules/pipeline/pipeline.cpp.o -c /home/persist/alembic/Nova/Core/modules/pipeline/pipeline.cpp",
+  "file": "/home/persist/alembic/Nova/Core/modules/pipeline/pipeline.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/modules/pipeline/pipeline.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/modules/pipeline/scene.cpp.o -c /home/persist/alembic/Nova/Core/modules/pipeline/scene.cpp",
+  "file": "/home/persist/alembic/Nova/Core/modules/pipeline/scene.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/modules/pipeline/scene.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/modules/camera/camera.cpp.o -c /home/persist/alembic/Nova/Core/modules/camera/camera.cpp",
+  "file": "/home/persist/alembic/Nova/Core/modules/camera/camera.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/modules/camera/camera.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/modules/camera/perspective.cpp.o -c /home/persist/alembic/Nova/Core/modules/camera/perspective.cpp",
+  "file": "/home/persist/alembic/Nova/Core/modules/camera/perspective.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/modules/camera/perspective.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/modules/atomic/atomic.cpp.o -c /home/persist/alembic/Nova/Core/modules/atomic/atomic.cpp",
+  "file": "/home/persist/alembic/Nova/Core/modules/atomic/atomic.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/modules/atomic/atomic.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/components/genesis.cpp.o -c /home/persist/alembic/Nova/Core/components/genesis.cpp",
+  "file": "/home/persist/alembic/Nova/Core/components/genesis.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/components/genesis.cpp.o"
+},
+{
+  "directory": "/home/persist/alembic/Nova/build",
+  "command": "/usr/bin/c++ -DNOVA_EXPORT_SYMBOLS -DNOVA_SDL2_ENABLED -DVK_USE_PLATFORM_XCB_KHR -Dnova_compute_EXPORTS -I/home/persist/alembic/Nova -I/home/persist/alembic/Nova/Core -I/home/persist/alembic/Nova/Core/components -I/home/persist/alembic/Nova/Core/components/extern -isystem /usr/include/SDL2 -O3 -march=native -DNDEBUG -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wno-unused-parameter -O3 -march=native -o CMakeFiles/nova_compute.dir/Core/components/logger.cpp.o -c /home/persist/alembic/Nova/Core/components/logger.cpp",
+  "file": "/home/persist/alembic/Nova/Core/components/logger.cpp",
+  "output": "CMakeFiles/nova_compute.dir/Core/components/logger.cpp.o"
+}
+]
